@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.portainer.entrypoints=web
+        - traefik.http.routers.portainer.service=portainer
+        - traefik.http.services.portainer.loadbalancer.server.port=9000
+
+networks:
+  traefik-public:
+    external: true
