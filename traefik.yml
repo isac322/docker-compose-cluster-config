@@ -13,7 +13,6 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-        window: 120s
       mode: replicated
       replicas: 2
       placement:
