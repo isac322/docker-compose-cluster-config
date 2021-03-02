@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  registry:
+    image: registry:2.7
+    networks:
+      - traefik-public
+    volumes:
+      - /mnt/registry:/var/lib/registry
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      mode: replicated
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.registry.rule=Host(`registry.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.registry.entrypoints=web
+        - traefik.http.services.registry.loadbalancer.server.port=5000
+
+networks:
+  traefik-public:
+    external: true

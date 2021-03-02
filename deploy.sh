@@ -8,3 +8,4 @@ function deploy() {
 
 deploy 'traefik.yml'
 deploy 'portainer.yml'
+deploy 'registry.yml'
