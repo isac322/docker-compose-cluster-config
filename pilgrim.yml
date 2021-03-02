@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  pilgrim:
+    image: registry.bhyoo.com/pilgrim
+    networks:
+      - traefik-public
+    volumes:
+      - /mnt/pilgrim:/var/lib/pilgrim
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      mode: replicated
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.pilgrim.rule=Host(`pilgrim.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.pilgrim.entrypoints=web
+        - traefik.http.services.pilgrim.loadbalancer.server.port=402
+
+networks:
+  traefik-public:
+    external: true
