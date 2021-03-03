@@ -4,11 +4,14 @@ services:
   reverse-proxy:
     ports:
       - 80:80
-    image: traefik:v2.4
+      - 443:443
+    image: traefik:2.4
     networks:
       - traefik-public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /mnt/cert:/traefik/cert:ro
+      - /mnt/traefik/log:/log
     deploy:
       restart_policy:
         condition: on-failure
@@ -19,20 +22,28 @@ services:
         constraints: [node.role == manager]
       labels:
         - traefik.enable=true
+        - traefik.http.routers.reverse-proxy-insecure.rule=Host(`traefik.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.reverse-proxy-insecure.entrypoints=web
+        - traefik.http.routers.reverse-proxy-insecure.middlewares=redirectscheme
         - traefik.http.routers.reverse-proxy.rule=Host(`traefik.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.reverse-proxy.entrypoints=web
+        - traefik.http.routers.reverse-proxy.entrypoints=web-secure
+        - traefik.http.routers.reverse-proxy.tls=true
         - traefik.http.routers.reverse-proxy.service=api@internal
         - traefik.http.routers.reverse-proxy.middlewares=admin-auth
         - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
+        - traefik.http.middlewares.redirectscheme.redirectscheme.scheme=https
         - traefik.http.services.reverse-proxy.loadbalancer.server.port=8080
     command:
       - --providers.docker.swarmMode=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=traefik-public
+      - --providers.file.filename=/traefik/cert/tls.yml
       - --entryPoints.web.address=:80
       - --entryPoints.web.forwardedHeaders.insecure
+      - --entryPoints.web-secure.address=:443
       - --accesslog
-      - --log
+      - --log.filePath=/path/to/traefik.log
+      - --log.format=json
       - --api
 
 networks:

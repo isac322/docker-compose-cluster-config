@@ -15,8 +15,12 @@ services:
       replicas: 1
       labels:
         - traefik.enable=true
+        - traefik.http.routers.registry-insecure.rule=Host(`registry.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.registry-insecure.entrypoints=web
+        - traefik.http.routers.registry-insecure.middlewares=redirectscheme
         - traefik.http.routers.registry.rule=Host(`registry.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.registry.entrypoints=web
+        - traefik.http.routers.registry.entrypoints=web-secure
+        - traefik.http.routers.registry.tls=true
         - traefik.http.services.registry.loadbalancer.server.port=5000
 
 networks:

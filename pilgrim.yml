@@ -15,8 +15,12 @@ services:
       replicas: 1
       labels:
         - traefik.enable=true
+        - traefik.http.routers.pilgrim-insecure.rule=Host(`pilgrim.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.pilgrim-insecure.entrypoints=web
+        - traefik.http.routers.pilgrim-insecure.middlewares=redirectscheme
         - traefik.http.routers.pilgrim.rule=Host(`pilgrim.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.pilgrim.entrypoints=web
+        - traefik.http.routers.pilgrim.tls=true
+        - traefik.http.routers.pilgrim.entrypoints=web-secure
         - traefik.http.services.pilgrim.loadbalancer.server.port=80
 
 networks:
