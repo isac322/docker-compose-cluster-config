@@ -17,7 +17,7 @@ services:
         - traefik.enable=true
         - traefik.http.routers.pilgrim.rule=Host(`pilgrim.${DOMAIN?Variable not set}`)
         - traefik.http.routers.pilgrim.entrypoints=web
-        - traefik.http.services.pilgrim.loadbalancer.server.port=402
+        - traefik.http.services.pilgrim.loadbalancer.server.port=80
 
 networks:
   traefik-public:
