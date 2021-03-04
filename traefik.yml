@@ -43,6 +43,9 @@ services:
       - --entryPoints.web-secure.address=:443
       - --entryPoints.web-secure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --accesslog
+      - --accesslog.filepath=/log/access.log
+      - --accesslog.format=json
+      - --accesslog.fields.headers.defaultmode=keep
       - --log.filePath=/path/to/traefik.log
       - --log.format=json
       - --api
