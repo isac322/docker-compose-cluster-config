@@ -39,8 +39,9 @@ services:
       - --providers.docker.network=traefik-public
       - --providers.file.filename=/traefik/cert/tls.yml
       - --entryPoints.web.address=:80
-      - --entryPoints.web.forwardedHeaders.insecure
+      - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --entryPoints.web-secure.address=:443
+      - --entryPoints.web-secure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --accesslog
       - --log.filePath=/path/to/traefik.log
       - --log.format=json
