@@ -4,7 +4,7 @@ STACK_NAME=bhyoo
 
 function deploy() {
   docker-compose -f "$1" config > /tmp/tmp.yml
-  docker stack deploy --prune -c /tmp/tmp.yml "$STACK_NAME"
+  docker stack deploy -c /tmp/tmp.yml "$STACK_NAME"
   rm /tmp/tmp.yml
 }
 
