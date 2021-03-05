@@ -8,7 +8,7 @@ function deploy() {
   rm /tmp/tmp.yml
 }
 
+deploy 'registry.yml'
 deploy 'traefik.yml'
 deploy 'portainer.yml'
-deploy 'registry.yml'
 deploy 'pilgrim.yml'
