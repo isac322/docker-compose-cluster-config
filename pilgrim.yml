@@ -11,8 +11,7 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-      mode: replicated
-      replicas: 2
+      mode: global
       labels:
         - traefik.enable=true
         - traefik.http.routers.pilgrim-insecure.rule=Host(`pilgrim.${DOMAIN?Variable not set}`)
