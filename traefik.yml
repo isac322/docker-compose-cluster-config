@@ -3,8 +3,12 @@ version: '3.8'
 services:
   reverse-proxy:
     ports:
-      - 80:80
-      - 443:443
+      - published: 80
+        target: 80
+        mode: host
+      - published: 443
+        target: 443
+        mode: host
     image: traefik:2.4
     networks:
       - traefik-public
