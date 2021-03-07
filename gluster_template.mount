@@ -1,0 +1,13 @@
+[Unit]
+Description=GlusterFS ${VOL_NAME} Mount
+After=glusterd.service
+Requires=glusterd.service
+
+[Mount]
+What=${GLUSTERFS_SERVERS}:/${VOL_NAME}
+Where=/mnt/${VOL_NAME}
+Type=glusterfs
+Options=defaults,_netdev
+
+[Install]
+WantedBy=multi-user.target
