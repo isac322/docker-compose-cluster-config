@@ -11,4 +11,5 @@ function deploy() {
 deploy 'registry.yml'
 deploy 'traefik.yml'
 deploy 'portainer.yml'
+deploy 'blackd.yml'
 deploy 'pilgrim.yml'
