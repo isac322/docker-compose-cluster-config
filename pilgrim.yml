@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   pilgrim:
-    image: registry.bhyoo.com/pilgrim:v0.2.3
+    image: registry.bhyoo.com/pilgrim:v0.2.4
     networks:
       - traefik-public
     volumes:
