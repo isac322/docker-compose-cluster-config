@@ -12,6 +12,7 @@ services:
     image: traefik:2.4
     networks:
       - traefik-public
+      - datadog
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     deploy:
@@ -47,6 +48,10 @@ services:
       - --accesslog=true
       - --accesslog.format=json
       - --accesslog.fields.headers.defaultmode=keep
+      - --metrics.datadog=true
+      - --metrics.datadog.address=datadog_agent:8125
+      - --tracing.datadog=true
+      - --tracing.datadog.localAgentHostPort=datadog_agent:8126
       - --log.format=json
       - --api
     secrets:
@@ -64,4 +69,6 @@ secrets:
 
 networks:
   traefik-public:
+    external: true
+  datadog:
     external: true

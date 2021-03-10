@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  agent:
+    ports:
+      - published: 8125
+        target: 8125
+        mode: host
+        protocol: udp
+      - published: 8126
+        target: 8126
+        mode: host
+    image: gcr.io/datadoghq/agent:7
+    networks:
+      - datadog
+    environment:
+      DD_PROCESS_AGENT_ENABLED: 'true'
+      DD_LOGS_ENABLED: 'true'
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: 'true'
+#      DD_SYSTEM_PROBE_ENABLED: 'true'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /sys/kernel/debug:/sys/kernel/debug
+    env_file:
+      - .datadog.env
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - SYS_PTRACE
+      - NET_ADMIN
+      - IPC_LOCK
+#    security_opt:
+#      - apparmor:unconfined
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      mode: global
+
+networks:
+  datadog:
+    external: true
