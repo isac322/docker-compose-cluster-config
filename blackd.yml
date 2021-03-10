@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  blackd:
+    image: isac322/blackd:latest
+    networks:
+      - traefik-public
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      mode: replicated
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.blackd-insecure.rule=Host(`black.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.blackd-insecure.entrypoints=web
+        - traefik.http.routers.blackd.rule=Host(`black.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.blackd.tls=true
+        - traefik.http.routers.blackd.entrypoints=web-secure
+        - traefik.http.services.blackd.loadbalancer.server.port=80
+
+networks:
+  traefik-public:
+    external: true
