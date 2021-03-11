@@ -14,8 +14,6 @@ services:
       - traefik-public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /mnt/cert:/traefik/cert:ro
-      - /mnt/traefik/log:/log
     deploy:
       restart_policy:
         condition: on-failure
@@ -41,18 +39,28 @@ services:
       - --providers.docker.swarmMode=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=traefik-public
-      - --providers.file.filename=/traefik/cert/tls.yml
+      - --providers.file.filename=/run/secrets/traefik_tls_conf.yml
       - --entryPoints.web.address=:80
       - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --entryPoints.web-secure.address=:443
       - --entryPoints.web-secure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
-      - --accesslog
-      - --accesslog.filepath=/log/access.log
+      - --accesslog=true
       - --accesslog.format=json
       - --accesslog.fields.headers.defaultmode=keep
-      - --log.filePath=/path/to/traefik.log
       - --log.format=json
       - --api
+    secrets:
+      - web_certificate
+      - web_private_key
+      - traefik_tls_conf.yml
+
+secrets:
+  web_certificate:
+    file: cert/${DOMAIN?Variable not set}.pem
+  web_private_key:
+    file: cert/${DOMAIN?Variable not set}.key
+  traefik_tls_conf.yml:
+    file: cert/traefik_tls_conf.yml
 
 networks:
   traefik-public:
