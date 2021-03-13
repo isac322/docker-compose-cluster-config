@@ -7,12 +7,20 @@ services:
       - traefik-public
     volumes:
       - /mnt/registry:/var/lib/registry
+    environment:
+      REGISTRY_LOG_ACCESSLOG_DISABLED: 'false'
+      REGISTRY_LOG_FORMATTER: json
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /run/secrets/htpasswd
+      REGISTRY_HTTP_SECRET: ${REGISTRY_SECRET?Variable not set}
+      REGISTRY_HTTP_HTTP2_DISABLED: 'false'
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 3
       mode: replicated
-      replicas: 1
+      replicas: 2
       labels:
         - traefik.enable=true
         - traefik.http.routers.registry-insecure.rule=Host(`registry.${DOMAIN?Variable not set}`)
@@ -22,7 +30,13 @@ services:
         - traefik.http.routers.registry.entrypoints=web-secure
         - traefik.http.routers.registry.tls=true
         - traefik.http.services.registry.loadbalancer.server.port=5000
+    secrets:
+      - htpasswd
 
 networks:
   traefik-public:
+    external: true
+
+secrets:
+  htpasswd:
     external: true
