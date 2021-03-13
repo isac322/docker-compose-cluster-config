@@ -12,6 +12,7 @@ services:
     image: traefik:2.4
     networks:
       - traefik-public
+      - datadog
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     deploy:
@@ -31,7 +32,7 @@ services:
         - traefik.http.routers.reverse-proxy.tls=true
         - traefik.http.routers.reverse-proxy.service=api@internal
         - traefik.http.routers.reverse-proxy.middlewares=admin-auth
-        - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
+        - traefik.http.middlewares.admin-auth.basicauth.usersfile=/run/secrets/htpasswd
         - traefik.http.middlewares.redirectscheme.redirectscheme.scheme=https
         - traefik.http.middlewares.redirectscheme.redirectscheme.permanent=true
         - traefik.http.services.reverse-proxy.loadbalancer.server.port=8080
@@ -39,7 +40,7 @@ services:
       - --providers.docker.swarmMode=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=traefik-public
-      - --providers.file.filename=/run/secrets/traefik_tls_conf.yml
+      - --providers.file.filename=/traefik_tls.yml
       - --entryPoints.web.address=:80
       - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --entryPoints.web-secure.address=:443
@@ -47,21 +48,33 @@ services:
       - --accesslog=true
       - --accesslog.format=json
       - --accesslog.fields.headers.defaultmode=keep
+      - --metrics.datadog=true
+      - --metrics.datadog.address=datadog_agent:8125
+      - --tracing.datadog=true
+      - --tracing.datadog.localAgentHostPort=datadog_agent:8126
       - --log.format=json
       - --api
     secrets:
       - web_certificate
       - web_private_key
-      - traefik_tls_conf.yml
+      - htpasswd
+    configs:
+      - traefik_tls.yml
 
 secrets:
   web_certificate:
-    file: cert/${DOMAIN?Variable not set}.pem
+    external: true
   web_private_key:
-    file: cert/${DOMAIN?Variable not set}.key
-  traefik_tls_conf.yml:
-    file: cert/traefik_tls_conf.yml
+    external: true
+  htpasswd:
+    external: true
+
+configs:
+  traefik_tls.yml:
+    external: true
 
 networks:
   traefik-public:
+    external: true
+  datadog:
     external: true

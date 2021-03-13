@@ -4,12 +4,15 @@ STACK_NAME=bhyoo
 
 function deploy() {
   docker-compose -f "$1" config > /tmp/tmp.yml
-  docker stack deploy -c /tmp/tmp.yml "$STACK_NAME"
+  docker stack deploy --with-registry-auth -c /tmp/tmp.yml "$2"
   rm /tmp/tmp.yml
 }
 
-deploy 'registry.yml'
-deploy 'traefik.yml'
-deploy 'portainer.yml'
-deploy 'blackd.yml'
-deploy 'pilgrim.yml'
+deploy 'registry.yml' "$STACK_NAME"
+deploy 'traefik.yml' "$STACK_NAME"
+
+deploy 'datadog.yml' 'datadog'
+
+deploy 'portainer.yml' "$STACK_NAME"
+deploy 'blackd.yml' "$STACK_NAME"
+deploy 'pilgrim.yml' "$STACK_NAME"

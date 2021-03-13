@@ -2,18 +2,21 @@ version: '3.9'
 
 services:
   pilgrim:
-    image: registry.bhyoo.com/pilgrim:v0.2.4
+    image: registry.bhyoo.com/pilgrim:v0.2.5
     networks:
       - traefik-public
+      - datadog
     volumes:
       - /mnt/pilgrim:/var/lib/pilgrim
     environment:
       PILGRIM_DB_URL: sqlite:///var/lib/pilgrim/db.sqlite3
+      DD_AGENT_HOST: datadog_agent
     deploy:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-      mode: global
+      mode: replicated
+      replicas: 2
       labels:
         - traefik.enable=true
         - traefik.http.routers.pilgrim-insecure.rule=Host(`pilgrim.${DOMAIN?Variable not set}`)
@@ -31,4 +34,6 @@ services:
 
 networks:
   traefik-public:
+    external: true
+  datadog:
     external: true
