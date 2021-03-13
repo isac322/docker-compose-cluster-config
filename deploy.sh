@@ -4,7 +4,7 @@ STACK_NAME=bhyoo
 
 function deploy() {
   docker-compose -f "$1" config > /tmp/tmp.yml
-  docker stack deploy -c /tmp/tmp.yml "$2"
+  docker stack deploy --with-registry-auth -c /tmp/tmp.yml "$2"
   rm /tmp/tmp.yml
 }
 
