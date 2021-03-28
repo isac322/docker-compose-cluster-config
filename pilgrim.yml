@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   pilgrim:
-    image: registry.bhyoo.com/pilgrim:v0.2.8
+    image: registry.bhyoo.com/pilgrim:v0.2.9
     networks:
       - traefik-public
       - datadog
@@ -10,6 +10,8 @@ services:
       - /mnt/pilgrim:/var/lib/pilgrim
     environment:
       PILGRIM_DB_URL: sqlite:///var/lib/pilgrim/db.sqlite3
+      PILGRIM_RESOURCE_PATH: /var/lib/pilgrim/resource
+      PILGRIM_IMAGE_PATH: images
       DD_AGENT_HOST: datadog_agent
       PILGRIM_DD_ON: 1
     deploy:
