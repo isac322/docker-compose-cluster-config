@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   pilgrim:
-    image: registry.bhyoo.com/pilgrim:v0.2.9
+    image: registry.bhyoo.com/pilgrim:v0.3.0
     networks:
       - traefik-public
       - datadog
@@ -14,6 +14,7 @@ services:
       PILGRIM_IMAGE_PATH: images
       DD_AGENT_HOST: datadog_agent
       PILGRIM_DD_ON: 1
+      PILGRIM_QUESTION_OFFSET: 11
     deploy:
       restart_policy:
         condition: on-failure
