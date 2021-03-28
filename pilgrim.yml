@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   pilgrim:
-    image: registry.bhyoo.com/pilgrim:v0.2.5
+    image: registry.bhyoo.com/pilgrim:v0.2.8
     networks:
       - traefik-public
       - datadog
@@ -11,6 +11,7 @@ services:
     environment:
       PILGRIM_DB_URL: sqlite:///var/lib/pilgrim/db.sqlite3
       DD_AGENT_HOST: datadog_agent
+      PILGRIM_DD_ON: 1
     deploy:
       restart_policy:
         condition: on-failure
