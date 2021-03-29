@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /run/secrets/web_certificate
+      keyFile: /run/secrets/web_private_key
