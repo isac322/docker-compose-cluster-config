@@ -26,6 +26,9 @@ ip6tables -A INPUT -p ipv6-icmp --icmpv6-type 128 -m conntrack --ctstate NEW -j 
 ip6tables -A TCP -p tcp --dport 80 -j ACCEPT
 ip6tables -A TCP -p tcp --dport 443 -j ACCEPT
 
+# k3s
+ip6tables -A TCP -p tcp --dport 6443 -j ACCEPT
+
 # SSH Rate Limit
 ip6tables -A IN_SSH -m recent --name sshbf --rttl --rcheck --hitcount 3 --seconds 10 -j LOG_AND_DROP
 ip6tables -A IN_SSH -m recent --name sshbf --rttl --rcheck --hitcount 4 --seconds 1800 -j LOG_AND_DROP

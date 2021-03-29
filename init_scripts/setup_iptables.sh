@@ -22,6 +22,9 @@ iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 iptables -A TCP -p tcp --dport 80 -j ACCEPT
 iptables -A TCP -p tcp --dport 443 -j ACCEPT
 
+# k3s
+iptables -A TCP -p tcp --dport 6443 -j ACCEPT
+
 # SSH Rate Limit
 iptables -A IN_SSH -m recent --name sshbf --rttl --rcheck --hitcount 3 --seconds 10 -j LOG_AND_DROP
 iptables -A IN_SSH -m recent --name sshbf --rttl --rcheck --hitcount 4 --seconds 1800 -j LOG_AND_DROP
