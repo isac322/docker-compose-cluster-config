@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  postgresql:
+    ports:
+      - 5432:5432
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_passwd
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --encoding=UTF8
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      mode: replicated
+      replicas: 1
+    command: -c ssl=on -c ssl_cert_file=/run/secrets/custom_certificate -c ssl_key_file=/run/secrets/custom_private_key -c ssl_ca_file=/run/secrets/custom_ca
+    secrets:
+      - postgres_user
+      - postgres_passwd
+      - source: custom_certificate
+        uid: '70'
+        mode: 0400
+      - source: custom_private_key
+        uid: '70'
+        mode: 0400
+      - source: custom_ca
+        uid: '70'
+        mode: 0400
+
+secrets:
+  postgres_user:
+    external: true
+  postgres_passwd:
+    external: true
+  custom_certificate:
+    external: true
+  custom_private_key:
+    external: true
+  custom_ca:
+    external: true

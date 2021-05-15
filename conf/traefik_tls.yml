@@ -1,4 +1,4 @@
 tls:
   certificates:
-    - certFile: /run/secrets/web_certificate
-      keyFile: /run/secrets/web_private_key
+    - certFile: /run/secrets/custom_certificate
+      keyFile: /run/secrets/custom_private_key

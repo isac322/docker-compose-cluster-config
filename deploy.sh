@@ -12,6 +12,7 @@ deploy 'registry.yml' "$STACK_NAME"
 deploy 'traefik.yml' "$STACK_NAME"
 
 deploy 'datadog.yml' 'datadog'
+deploy 'postgresql.yml' "$STACK_NAME"
 
 deploy 'portainer.yml' "$STACK_NAME"
 deploy 'blackd.yml' "$STACK_NAME"

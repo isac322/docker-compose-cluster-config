@@ -41,10 +41,12 @@ services:
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=traefik-public
       - --providers.file.filename=/traefik_tls.yml
-      - --entryPoints.web.address=:80
-      - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
-      - --entryPoints.web-secure.address=:443
-      - --entryPoints.web-secure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
+      - --entrypoints.web-secure.address=:443
+      - --entrypoints.web-secure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
+      - --entrypoints.postgres.address=:5432
+      - --entrypoints.postgres.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --accesslog=true
       - --accesslog.format=json
       - --accesslog.fields.headers.defaultmode=keep
@@ -55,16 +57,16 @@ services:
       - --log.format=json
       - --api
     secrets:
-      - web_certificate
-      - web_private_key
+      - custom_certificate
+      - custom_private_key
       - htpasswd
     configs:
       - traefik_tls.yml
 
 secrets:
-  web_certificate:
+  custom_certificate:
     external: true
-  web_private_key:
+  custom_private_key:
     external: true
   htpasswd:
     external: true
