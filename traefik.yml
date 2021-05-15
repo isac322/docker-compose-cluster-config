@@ -45,8 +45,6 @@ services:
       - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --entrypoints.web-secure.address=:443
       - --entrypoints.web-secure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
-      - --entrypoints.postgres.address=:5432
-      - --entrypoints.postgres.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.1/24
       - --accesslog=true
       - --accesslog.format=json
       - --accesslog.fields.headers.defaultmode=keep
